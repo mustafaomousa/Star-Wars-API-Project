@@ -1,4 +1,5 @@
 const fetch = require(`node-fetch`);
+const fs = require('fs').promises
 
 const person = "https://swapi.dev/api/people/1";
 
@@ -19,9 +20,8 @@ fetch(person)
         let movieRequests = globalMovieArray.map(movie => fetch(movie));
         Promise.all(movieRequests)
             .then(responses => {
-                for(let response of responses){
-                    return fetch(response);
-                }
+                Promise.all(responses.map(res => res.json()))
+                .then(film => {console.log(film)})
             })
             .then(movieResponse => movieResponse.json())
             .then(movie => console.log(movie));
